@@ -3,14 +3,13 @@
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 	import FullscreenToggle from '$lib/components/FullscreenToggle.svelte';
 	import DifficultySelector from '$lib/components/DifficultySelector.svelte';
+	import LanguageSelector from '$lib/components/LanguageSelector.svelte';
+	import { t } from '$lib/i18n';
 </script>
 
 <svelte:head>
-	<title>Cecil — Cerita Kecil</title>
-	<meta
-		name="description"
-		content="Cecil membantu anak berlatih mendengarkan dan memahami cerita pendek lewat kartu cerita yang bisa digeser."
-	/>
+	<title>{t('pageTitle')}</title>
+	<meta name="description" content={t('metaDescription')} />
 </svelte:head>
 
 <div
@@ -21,13 +20,14 @@
 			<div>
 				<h1 class="font-display text-xl font-extrabold tracking-tight sm:text-2xl">
 					Cecil <span class="opacity-40">·</span>
-					<span class="font-semibold opacity-80">Cerita Kecil</span>
+					<span class="font-semibold opacity-80">{t('brandTagline')}</span>
 				</h1>
 				<p class="mt-0.5 text-sm text-stone-500 dark:text-stone-400">
-					Bacakan ceritanya, lalu tanyakan pertanyaannya.
+					{t('subtitle')}
 				</p>
 			</div>
 			<div class="flex items-center gap-2">
+				<LanguageSelector />
 				<DifficultySelector />
 				<FullscreenToggle />
 				<ThemeToggle />

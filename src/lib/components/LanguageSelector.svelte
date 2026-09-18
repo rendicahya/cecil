@@ -1,27 +1,27 @@
 <script lang="ts">
-	import { difficultyStore } from '$lib/stores/difficulty.svelte';
-	import { t, type TranslationKey } from '$lib/i18n';
-	import type { Difficulty } from '$lib/types';
+	import { languageStore } from '$lib/stores/language.svelte';
+	import { t } from '$lib/i18n';
+	import type { Language } from '$lib/types';
 
-	const OPTIONS: { value: Difficulty; labelKey: TranslationKey }[] = [
-		{ value: 'easy', labelKey: 'difficultyEasy' },
-		{ value: 'medium', labelKey: 'difficultyMedium' },
-		{ value: 'hard', labelKey: 'difficultyHard' }
+	// Each language's own name is shown as-is, not translated into the active UI language.
+	const OPTIONS: { value: Language; label: string }[] = [
+		{ value: 'id', label: 'ID' },
+		{ value: 'en', label: 'EN' }
 	];
 </script>
 
 <div
 	class="flex items-center gap-0.5 rounded-full border border-black/10 bg-white/70 p-1 text-sm shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/10"
 	role="radiogroup"
-	aria-label={t('difficultyGroupLabel')}
+	aria-label={t('languageGroupLabel')}
 >
 	{#each OPTIONS as option (option.value)}
-		{@const active = difficultyStore.current === option.value}
+		{@const active = languageStore.current === option.value}
 		<button
 			type="button"
 			role="radio"
 			aria-checked={active}
-			onclick={() => difficultyStore.set(option.value)}
+			onclick={() => languageStore.set(option.value)}
 			class="rounded-full px-3 py-1.5 font-semibold transition active:scale-95"
 			class:bg-stone-800={active}
 			class:text-white={active}
@@ -32,7 +32,7 @@
 			class:dark:text-stone-300={!active}
 			class:dark:hover:text-white={!active}
 		>
-			{t(option.labelKey)}
+			{option.label}
 		</button>
 	{/each}
 </div>

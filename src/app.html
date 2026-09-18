@@ -21,6 +21,18 @@
 					if (dark) document.documentElement.classList.add('dark');
 				} catch (e) {}
 			})();
+			(function () {
+				try {
+					var stored = localStorage.getItem('cecil-language');
+					var lang =
+						stored === 'id' || stored === 'en'
+							? stored
+							: navigator.language.toLowerCase().indexOf('en') === 0
+								? 'en'
+								: 'id';
+					document.documentElement.lang = lang;
+				} catch (e) {}
+			})();
 		</script>
 		%sveltekit.head%
 	</head>

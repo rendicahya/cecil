@@ -115,7 +115,3 @@ export const TIMES = [
 	'Di hari Minggu',
 	'Ketika liburan tiba'
 ];
-
-export function pickOne<T>(list: readonly T[]): T {
-	return list[Math.floor(Math.random() * list.length)];
-}

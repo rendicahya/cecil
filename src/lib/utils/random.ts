@@ -1,3 +1,7 @@
+export function pickOne<T>(list: readonly T[]): T {
+	return list[Math.floor(Math.random() * list.length)];
+}
+
 export function shuffle<T>(list: T[]): T[] {
 	const copy = [...list];
 	for (let i = copy.length - 1; i > 0; i--) {

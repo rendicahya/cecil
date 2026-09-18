@@ -1,22 +1,35 @@
-import type { Difficulty, StoryFact, StoryFactKey, StoryQuestion } from '../types';
+import type { Difficulty, Language, StoryFact, StoryFactKey, StoryQuestion } from '../types';
 import { createId, shuffle } from '../utils/random';
 
 type QuestionBuilder = (get: (key: StoryFactKey) => string | undefined) => string;
 
 /**
- * One question phrasing per fact type. Each builder only uses facts that are
- * guaranteed to exist when that key is present, so every question it
- * produces is answerable purely from information that appeared in the story.
+ * One question phrasing per fact type per language. Each builder only uses
+ * facts that are guaranteed to exist when that key is present, so every
+ * question it produces is answerable purely from information that appeared
+ * in the story.
  */
-const QUESTION_BUILDERS: Record<StoryFactKey, QuestionBuilder> = {
-	character: () => 'Siapa nama anak dalam cerita ini?',
-	companion: (get) => `Siapa yang bersama ${get('character')} dalam cerita ini?`,
-	destination: (get) => `Ke mana ${get('character')} pergi?`,
-	transport: (get) => `${get('character')} pergi menggunakan apa?`,
-	item: (get) => `Apa yang dibawa ${get('character')}?`,
-	activity: (get) => `Apa yang dilakukan ${get('character')} di sana?`,
-	reason: (get) => `Mengapa ${get('character')} pergi ke ${get('destination') ?? 'sana'}?`,
-	time: (get) => `Kapan ${get('character')} pergi?`
+const QUESTION_BUILDERS: Record<Language, Record<StoryFactKey, QuestionBuilder>> = {
+	id: {
+		character: () => 'Siapa nama anak dalam cerita ini?',
+		companion: (get) => `Siapa yang bersama ${get('character')} dalam cerita ini?`,
+		destination: (get) => `Ke mana ${get('character')} pergi?`,
+		transport: (get) => `${get('character')} pergi menggunakan apa?`,
+		item: (get) => `Apa yang dibawa ${get('character')}?`,
+		activity: (get) => `Apa yang dilakukan ${get('character')} di sana?`,
+		reason: (get) => `Mengapa ${get('character')} pergi ke ${get('destination') ?? 'sana'}?`,
+		time: (get) => `Kapan ${get('character')} pergi?`
+	},
+	en: {
+		character: () => 'What is the name of the child in this story?',
+		companion: (get) => `Who was with ${get('character')} in this story?`,
+		destination: (get) => `Where did ${get('character')} go?`,
+		transport: (get) => `What did ${get('character')} travel by?`,
+		item: (get) => `What did ${get('character')} bring?`,
+		activity: (get) => `What did ${get('character')} do there?`,
+		reason: (get) => `Why did ${get('character')} go to ${get('destination') ?? 'there'}?`,
+		time: (get) => `When did ${get('character')} go?`
+	}
 };
 
 /** More facts get asked about as difficulty rises, on top of the ones a story actually has. */
@@ -33,9 +46,11 @@ const MAX_QUESTIONS_BY_DIFFICULTY: Record<Difficulty, number> = {
  */
 export function generateQuestions(
 	facts: StoryFact[],
-	difficulty: Difficulty = 'medium'
+	difficulty: Difficulty = 'medium',
+	language: Language = 'id'
 ): StoryQuestion[] {
 	const maxQuestions = MAX_QUESTIONS_BY_DIFFICULTY[difficulty];
+	const builders = QUESTION_BUILDERS[language];
 	const valueByKey = new Map(facts.map((f) => [f.key, f.value]));
 	const get = (key: StoryFactKey) => valueByKey.get(key);
 
@@ -50,6 +65,6 @@ export function generateQuestions(
 
 	return chosenKeys.map((key) => ({
 		id: createId(),
-		text: QUESTION_BUILDERS[key](get)
+		text: builders[key](get)
 	}));
 }

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { StoryCardData } from '$lib/types';
 	import { getPaletteEntry } from '$lib/palette';
+	import { t } from '$lib/i18n';
 	import BookOpenText from '@lucide/svelte/icons/book-open-text';
 	import CircleHelp from '@lucide/svelte/icons/circle-help';
 
@@ -37,7 +38,7 @@
 			<BookOpenText class="h-4 w-4" strokeWidth={2.25} />
 		</span>
 		<p class="font-display text-xs font-extrabold tracking-[0.2em] uppercase opacity-70">
-			Cerita Kecil
+			{t('brandTagline')}
 		</p>
 	</header>
 
@@ -53,7 +54,7 @@
 		<div class="mb-2 flex items-center gap-2">
 			<CircleHelp class="h-4 w-4 opacity-70" />
 			<p class="font-display text-xs font-extrabold tracking-[0.16em] uppercase opacity-70">
-				Pertanyaan
+				{t('questionsLabel')}
 			</p>
 		</div>
 		<ol class="space-y-1.5">

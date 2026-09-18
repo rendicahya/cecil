@@ -2,17 +2,24 @@
 	import { browser } from '$app/environment';
 	import { CardDeck } from '$lib/stores/cardDeck.svelte';
 	import { difficultyStore } from '$lib/stores/difficulty.svelte';
+	import { languageStore } from '$lib/stores/language.svelte';
+	import { t } from '$lib/i18n';
 	import type { StoryCardData } from '$lib/types';
 	import StoryCard from './StoryCard.svelte';
 	import { stableRotation } from '$lib/utils/hash';
 
 	// Story/question generation must only happen in the browser, so the deck
 	// is created on the client, never during prerendering.
-	let deck: CardDeck | null = $state(browser ? new CardDeck(difficultyStore.current) : null);
+	let deck: CardDeck | null = $state(
+		browser ? new CardDeck(difficultyStore.current, languageStore.current) : null
+	);
 
-	// Switching difficulty reshapes the stories/questions ahead, so the deck resets.
+	// Switching difficulty or language reshapes the stories/questions ahead, so the deck resets.
 	$effect(() => {
 		deck?.setDifficulty(difficultyStore.current);
+	});
+	$effect(() => {
+		deck?.setLanguage(languageStore.current);
 	});
 
 	const SWIPE_DISTANCE_THRESHOLD = 110;
@@ -171,7 +178,7 @@
 				class="absolute inset-0 flex animate-pulse items-center justify-center rounded-[28px] border border-black/5 bg-white/60 dark:border-white/10 dark:bg-white/5"
 			>
 				<p class="font-display text-sm font-semibold text-stone-400 dark:text-stone-500">
-					Menyiapkan kartu cerita…
+					{t('preparingCards')}
 				</p>
 			</div>
 		{/if}

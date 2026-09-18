@@ -1,4 +1,4 @@
-import type { CardColorName, Difficulty, StoryCardData } from '../types';
+import type { CardColorName, Difficulty, Language, StoryCardData } from '../types';
 import { generateStory } from '../stories/generator';
 import { generateQuestions } from '../questions/generator';
 import { pickNextColor } from '../palette';
@@ -7,13 +7,17 @@ import { createId } from '../utils/random';
 /** How many upcoming cards stay pre-generated (buffered) ahead of the current one. */
 const BUFFER_AHEAD = 3;
 
-function createCard(previousColor: CardColorName | null, difficulty: Difficulty): StoryCardData {
-	const story = generateStory(difficulty);
+function createCard(
+	previousColor: CardColorName | null,
+	difficulty: Difficulty,
+	language: Language
+): StoryCardData {
+	const story = generateStory(difficulty, language);
 	return {
 		id: createId(),
 		color: pickNextColor(previousColor),
 		story,
-		questions: generateQuestions(story.facts, difficulty)
+		questions: generateQuestions(story.facts, difficulty, language)
 	};
 }
 
@@ -26,9 +30,11 @@ export class CardDeck {
 	cards = $state<StoryCardData[]>([]);
 	index = $state(0);
 	private difficulty: Difficulty;
+	private language: Language;
 
-	constructor(difficulty: Difficulty = 'medium') {
+	constructor(difficulty: Difficulty = 'medium', language: Language = 'id') {
 		this.difficulty = difficulty;
+		this.language = language;
 		this.fillBuffer();
 	}
 
@@ -36,9 +42,14 @@ export class CardDeck {
 	setDifficulty(difficulty: Difficulty) {
 		if (difficulty === this.difficulty) return;
 		this.difficulty = difficulty;
-		this.cards = [];
-		this.index = 0;
-		this.fillBuffer();
+		this.reset();
+	}
+
+	/** Changing language regenerates every card ahead in the new language. */
+	setLanguage(language: Language) {
+		if (language === this.language) return;
+		this.language = language;
+		this.reset();
 	}
 
 	get current(): StoryCardData | undefined {
@@ -63,10 +74,16 @@ export class CardDeck {
 		if (this.canGoPrev) this.index -= 1;
 	}
 
+	private reset() {
+		this.cards = [];
+		this.index = 0;
+		this.fillBuffer();
+	}
+
 	private fillBuffer() {
 		while (this.cards.length - this.index < BUFFER_AHEAD) {
 			const previousColor = this.cards.at(-1)?.color ?? null;
-			this.cards.push(createCard(previousColor, this.difficulty));
+			this.cards.push(createCard(previousColor, this.difficulty, this.language));
 		}
 	}
 }

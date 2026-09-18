@@ -2,6 +2,8 @@ export type CardColorName = 'cream' | 'peach' | 'yellow' | 'mint' | 'sky' | 'lav
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
+export type Language = 'id' | 'en';
+
 export type StoryFactKey =
 	'character' | 'companion' | 'destination' | 'transport' | 'item' | 'activity' | 'reason' | 'time';
 
