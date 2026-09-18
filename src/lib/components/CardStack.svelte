@@ -158,7 +158,7 @@
 
 <svelte:window onkeydown={onKeydown} />
 
-<div class="flex flex-col items-center">
+<div class="flex w-full flex-col items-center">
 	<div class="relative mx-auto aspect-[3/4] w-full max-w-[420px]">
 		{#if visibleStack.length === 0}
 			<div
