@@ -14,6 +14,12 @@ dirancang terasa seperti bermain dengan kartu cerita fisik: satu kartu
 utama di tengah, kartu berikutnya mengintip di belakang, dan dapat digeser
 dengan mouse atau sentuhan.
 
+Tingkat kesulitan cerita (Mudah/Sedang/Sulit) dapat dipilih lewat kontrol
+di header: semakin tinggi tingkatnya, semakin banyak fakta yang dikemas
+dalam satu cerita dan semakin banyak pertanyaan yang diajukan. Cecil juga
+tersedia dalam Bahasa Indonesia dan Inggris, sehingga orang tua bisa
+memilih bahasa yang sesuai dengan kebutuhan latihan anak.
+
 Cerita dan pertanyaan pada setiap kartu digenerate secara acak dan
 langsung di browser (tanpa backend, database, atau API eksternal), dengan
 jumlah kartu yang tidak dibatasi.
