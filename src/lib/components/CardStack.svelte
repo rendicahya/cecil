@@ -13,7 +13,8 @@
 	const SWIPE_VELOCITY_THRESHOLD = 0.55; // px/ms
 	const EXIT_ANIMATION_MS = 320;
 	const SNAP_BACK_MS = 320;
-	const SETTLE_ANIMATION_MS = 220;
+	const SETTLE_ANIMATION_MS = 380;
+	const STACK_SETTLE_MS = 380;
 
 	let dragX = $state(0);
 	let dragY = $state(0);
@@ -48,6 +49,20 @@
 			return `translateY(${y}px) scale(${scale}) rotate(${rotate}deg)`;
 		}
 		return `translateY(${baseY}px) scale(${baseScale}) rotate(${rotate}deg)`;
+	}
+
+	/** Front card follows the pointer/exit animation; cards behind it settle into the stack. */
+	function transformFor(position: number, id: string): string {
+		return position === 0
+			? `translate(${dragX}px, ${dragY}px) rotate(${frontRotation}deg)`
+			: stackTransform(position, id);
+	}
+
+	function transitionFor(position: number): string {
+		if (position === 0) {
+			return dragging ? 'none' : `transform ${transitionMs}ms cubic-bezier(0.22, 1, 0.36, 1)`;
+		}
+		return dragging ? 'none' : `transform ${STACK_SETTLE_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`;
 	}
 
 	function onPointerDown(event: PointerEvent) {
@@ -144,7 +159,7 @@
 <svelte:window onkeydown={onKeydown} />
 
 <div class="flex flex-col items-center">
-	<div class="relative mx-auto w-full max-w-[420px]" style="height: clamp(480px, 72dvh, 640px);">
+	<div class="relative mx-auto aspect-[3/4] w-full max-w-[420px]">
 		{#if visibleStack.length === 0}
 			<div
 				class="absolute inset-0 flex animate-pulse items-center justify-center rounded-[28px] border border-black/5 bg-white/60 dark:border-white/10 dark:bg-white/5"
@@ -155,35 +170,26 @@
 			</div>
 		{/if}
 		{#each visibleStack as card, position (card.id)}
-			{#if position === 0}
-				<div
-					class="absolute inset-0 touch-none rounded-[28px] select-none"
-					class:cursor-grabbing={dragging}
-					class:cursor-grab={!dragging}
-					style="transform: translate({dragX}px, {dragY}px) rotate({frontRotation}deg); transition: {dragging
-						? 'none'
-						: `transform ${transitionMs}ms cubic-bezier(0.22, 1, 0.36, 1)`}; z-index: 30;"
-					onpointerdown={onPointerDown}
-					onpointermove={onPointerMove}
-					onpointerup={onPointerUp}
-					onpointercancel={onPointerUp}
-					role="group"
-					aria-roledescription="kartu cerita"
-				>
-					<StoryCard {card} />
-				</div>
-			{:else}
-				<div
-					class="pointer-events-none absolute inset-0 rounded-[28px]"
-					style="transform: {stackTransform(
-						position,
-						card.id
-					)}; transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1); z-index: {30 - position};"
-					aria-hidden="true"
-				>
-					<StoryCard {card} />
-				</div>
-			{/if}
+			<div
+				class="absolute inset-0 rounded-[28px]"
+				class:touch-none={position === 0}
+				class:select-none={position === 0}
+				class:pointer-events-none={position !== 0}
+				class:cursor-grabbing={position === 0 && dragging}
+				class:cursor-grab={position === 0 && !dragging}
+				style="transform: {transformFor(position, card.id)}; transition: {transitionFor(
+					position
+				)}; z-index: {30 - position};"
+				onpointerdown={position === 0 ? onPointerDown : undefined}
+				onpointermove={position === 0 ? onPointerMove : undefined}
+				onpointerup={position === 0 ? onPointerUp : undefined}
+				onpointercancel={position === 0 ? onPointerUp : undefined}
+				role={position === 0 ? 'group' : undefined}
+				aria-roledescription={position === 0 ? 'kartu cerita' : undefined}
+				aria-hidden={position !== 0}
+			>
+				<StoryCard {card} />
+			</div>
 		{/each}
 	</div>
 </div>
