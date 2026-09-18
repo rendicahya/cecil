@@ -143,8 +143,8 @@
 
 <svelte:window onkeydown={onKeydown} />
 
-<div class="flex flex-col items-center gap-5">
-	<div class="relative mx-auto aspect-[3/4] w-full max-w-[420px]">
+<div class="flex flex-col items-center">
+	<div class="relative mx-auto w-full max-w-[420px]" style="height: clamp(480px, 72dvh, 640px);">
 		{#if visibleStack.length === 0}
 			<div
 				class="absolute inset-0 flex animate-pulse items-center justify-center rounded-[28px] border border-black/5 bg-white/60 dark:border-white/10 dark:bg-white/5"
@@ -186,10 +186,4 @@
 			{/if}
 		{/each}
 	</div>
-
-	<p
-		class="font-display text-xs font-semibold tracking-wide text-stone-500 select-none dark:text-stone-400"
-	>
-		Geser kartu, atau gunakan tombol panah di keyboard
-	</p>
 </div>
