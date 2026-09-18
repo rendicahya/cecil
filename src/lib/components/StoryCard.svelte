@@ -10,11 +10,11 @@
 	// Longer stories get a smaller size so they still fit the card; short
 	// ones get to be big and inviting.
 	const STORY_SIZE_BREAKPOINTS: [number, string][] = [
-		[70, 'text-2xl sm:text-3xl'],
-		[95, 'text-xl sm:text-2xl'],
-		[120, 'text-lg sm:text-xl']
+		[75, 'text-3xl sm:text-4xl'],
+		[100, 'text-2xl sm:text-3xl'],
+		[125, 'text-xl sm:text-2xl']
 	];
-	const STORY_SIZE_FALLBACK = 'text-base sm:text-lg';
+	const STORY_SIZE_FALLBACK = 'text-lg sm:text-xl';
 
 	function storySizeClass(text: string): string {
 		for (const [maxLength, sizeClass] of STORY_SIZE_BREAKPOINTS) {
