@@ -6,6 +6,24 @@
 
 	let { card }: { card: StoryCardData } = $props();
 	const palette = $derived(getPaletteEntry(card.color));
+
+	// Longer stories get a smaller size so they still fit the card; short
+	// ones get to be big and inviting.
+	const STORY_SIZE_BREAKPOINTS: [number, string][] = [
+		[70, 'text-2xl sm:text-3xl'],
+		[95, 'text-xl sm:text-2xl'],
+		[120, 'text-lg sm:text-xl']
+	];
+	const STORY_SIZE_FALLBACK = 'text-base sm:text-lg';
+
+	function storySizeClass(text: string): string {
+		for (const [maxLength, sizeClass] of STORY_SIZE_BREAKPOINTS) {
+			if (text.length <= maxLength) return sizeClass;
+		}
+		return STORY_SIZE_FALLBACK;
+	}
+
+	const storyClass = $derived(storySizeClass(card.story.text));
 </script>
 
 <article
@@ -23,10 +41,8 @@
 		</p>
 	</header>
 
-	<div class="flex min-h-0 flex-1 items-center">
-		<p
-			class="font-display text-base leading-snug font-semibold text-balance sm:text-lg sm:leading-relaxed"
-		>
+	<div class="flex min-h-0 flex-1 items-center justify-center">
+		<p class="font-display {storyClass} text-center leading-snug font-semibold text-balance">
 			{card.story.text}
 		</p>
 	</div>
