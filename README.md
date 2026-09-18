@@ -5,7 +5,18 @@ bacaan anak lewat kartu cerita pendek yang dapat digeser (swipe) seperti
 kartu fisik. Orang tua membaca cerita pada kartu, lalu membacakan
 pertanyaannya kepada anak.
 
-Lihat [`CLAUDE.md`](./CLAUDE.md) untuk visi produk dan spesifikasi lengkap.
+## Tentang
+
+Cecil membantu melatih kemampuan mendengarkan, fokus, mengingat informasi
+pendek, pemahaman bahasa, dan kemampuan menjawab pertanyaan berdasarkan
+informasi yang didengar. Cecil bukan aplikasi ujian — pengalamannya
+dirancang terasa seperti bermain dengan kartu cerita fisik: satu kartu
+utama di tengah, kartu berikutnya mengintip di belakang, dan dapat digeser
+dengan mouse atau sentuhan.
+
+Cerita dan pertanyaan pada setiap kartu digenerate secara acak dan
+langsung di browser (tanpa backend, database, atau API eksternal), dengan
+jumlah kartu yang tidak dibatasi.
 
 ## Tech stack
 
