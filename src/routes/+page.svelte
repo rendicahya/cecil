@@ -13,10 +13,10 @@
 </svelte:head>
 
 <div
-	class="min-h-dvh bg-gradient-to-b from-[#FFF8EC] to-[#FFEFDC] text-stone-800 dark:from-[#241f2e] dark:to-[#1a1622] dark:text-stone-100"
+	class="min-h-dvh overflow-x-hidden bg-gradient-to-b from-[#FFF8EC] to-[#FFEFDC] text-stone-800 dark:from-[#241f2e] dark:to-[#1a1622] dark:text-stone-100"
 >
 	<div class="mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-4 py-5 sm:px-6 sm:py-7">
-		<header class="flex flex-wrap items-center justify-between gap-3">
+		<header class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 			<div>
 				<h1 class="font-display text-xl font-extrabold tracking-tight sm:text-2xl">
 					Cecil <span class="opacity-40">·</span>
@@ -26,7 +26,7 @@
 					{t('subtitle')}
 				</p>
 			</div>
-			<div class="flex items-center gap-2">
+			<div class="flex flex-wrap items-center gap-2">
 				<LanguageSelector />
 				<DifficultySelector />
 				<FullscreenToggle />

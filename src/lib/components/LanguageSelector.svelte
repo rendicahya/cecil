@@ -22,7 +22,7 @@
 			role="radio"
 			aria-checked={active}
 			onclick={() => languageStore.set(option.value)}
-			class="rounded-full px-3 py-1.5 font-semibold transition active:scale-95"
+			class="rounded-full px-2.5 py-1.5 font-semibold transition active:scale-95 sm:px-3"
 			class:bg-stone-800={active}
 			class:text-white={active}
 			class:dark:bg-white={active}
