@@ -2,37 +2,31 @@
 	import { difficultyStore } from '$lib/stores/difficulty.svelte';
 	import { t, type TranslationKey } from '$lib/i18n';
 	import type { Difficulty } from '$lib/types';
+	import ChevronDown from '@lucide/svelte/icons/chevron-down';
 
 	const OPTIONS: { value: Difficulty; labelKey: TranslationKey }[] = [
 		{ value: 'easy', labelKey: 'difficultyEasy' },
 		{ value: 'medium', labelKey: 'difficultyMedium' },
 		{ value: 'hard', labelKey: 'difficultyHard' }
 	];
+
+	function onChange(event: Event) {
+		difficultyStore.set((event.currentTarget as HTMLSelectElement).value as Difficulty);
+	}
 </script>
 
-<div
-	class="flex items-center gap-0.5 rounded-full border border-black/10 bg-white/70 p-1 text-sm shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/10"
-	role="radiogroup"
-	aria-label={t('difficultyGroupLabel')}
->
-	{#each OPTIONS as option (option.value)}
-		{@const active = difficultyStore.current === option.value}
-		<button
-			type="button"
-			role="radio"
-			aria-checked={active}
-			onclick={() => difficultyStore.set(option.value)}
-			class="rounded-full px-2.5 py-1.5 font-semibold transition active:scale-95 sm:px-3"
-			class:bg-stone-800={active}
-			class:text-white={active}
-			class:dark:bg-white={active}
-			class:dark:text-stone-900={active}
-			class:text-stone-500={!active}
-			class:hover:text-stone-800={!active}
-			class:dark:text-stone-300={!active}
-			class:dark:hover:text-white={!active}
-		>
-			{t(option.labelKey)}
-		</button>
-	{/each}
+<div class="relative flex items-center">
+	<select
+		value={difficultyStore.current}
+		onchange={onChange}
+		aria-label={t('difficultyGroupLabel')}
+		class="appearance-none rounded-full border border-black/10 bg-white/70 py-1.5 pr-8 pl-3 text-sm font-semibold text-stone-700 shadow-sm backdrop-blur transition hover:bg-white active:scale-95 dark:border-white/10 dark:bg-white/10 dark:text-stone-100 dark:hover:bg-white/20"
+	>
+		{#each OPTIONS as option (option.value)}
+			<option value={option.value}>{t(option.labelKey)}</option>
+		{/each}
+	</select>
+	<ChevronDown
+		class="pointer-events-none absolute top-1/2 right-2.5 h-4 w-4 -translate-y-1/2 text-stone-500 dark:text-stone-300"
+	/>
 </div>
