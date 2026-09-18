@@ -1,4 +1,4 @@
-import type { CardColorName, StoryCardData } from '../types';
+import type { CardColorName, Difficulty, StoryCardData } from '../types';
 import { generateStory } from '../stories/generator';
 import { generateQuestions } from '../questions/generator';
 import { pickNextColor } from '../palette';
@@ -7,13 +7,13 @@ import { createId } from '../utils/random';
 /** How many upcoming cards stay pre-generated (buffered) ahead of the current one. */
 const BUFFER_AHEAD = 3;
 
-function createCard(previousColor: CardColorName | null): StoryCardData {
-	const story = generateStory();
+function createCard(previousColor: CardColorName | null, difficulty: Difficulty): StoryCardData {
+	const story = generateStory(difficulty);
 	return {
 		id: createId(),
 		color: pickNextColor(previousColor),
 		story,
-		questions: generateQuestions(story.facts)
+		questions: generateQuestions(story.facts, difficulty)
 	};
 }
 
@@ -25,8 +25,19 @@ function createCard(previousColor: CardColorName | null): StoryCardData {
 export class CardDeck {
 	cards = $state<StoryCardData[]>([]);
 	index = $state(0);
+	private difficulty: Difficulty;
 
-	constructor() {
+	constructor(difficulty: Difficulty = 'medium') {
+		this.difficulty = difficulty;
+		this.fillBuffer();
+	}
+
+	/** Changing difficulty reshapes every card ahead, so the buffered ones are discarded. */
+	setDifficulty(difficulty: Difficulty) {
+		if (difficulty === this.difficulty) return;
+		this.difficulty = difficulty;
+		this.cards = [];
+		this.index = 0;
 		this.fillBuffer();
 	}
 
@@ -55,7 +66,7 @@ export class CardDeck {
 	private fillBuffer() {
 		while (this.cards.length - this.index < BUFFER_AHEAD) {
 			const previousColor = this.cards.at(-1)?.color ?? null;
-			this.cards.push(createCard(previousColor));
+			this.cards.push(createCard(previousColor, this.difficulty));
 		}
 	}
 }

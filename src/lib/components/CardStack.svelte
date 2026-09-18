@@ -1,13 +1,19 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { CardDeck } from '$lib/stores/cardDeck.svelte';
+	import { difficultyStore } from '$lib/stores/difficulty.svelte';
 	import type { StoryCardData } from '$lib/types';
 	import StoryCard from './StoryCard.svelte';
 	import { stableRotation } from '$lib/utils/hash';
 
 	// Story/question generation must only happen in the browser, so the deck
 	// is created on the client, never during prerendering.
-	let deck: CardDeck | null = $state(browser ? new CardDeck() : null);
+	let deck: CardDeck | null = $state(browser ? new CardDeck(difficultyStore.current) : null);
+
+	// Switching difficulty reshapes the stories/questions ahead, so the deck resets.
+	$effect(() => {
+		deck?.setDifficulty(difficultyStore.current);
+	});
 
 	const SWIPE_DISTANCE_THRESHOLD = 110;
 	const SWIPE_VELOCITY_THRESHOLD = 0.55; // px/ms

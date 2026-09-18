@@ -1,4 +1,4 @@
-import type { StoryFact, StoryFactKey, StoryQuestion } from '../types';
+import type { Difficulty, StoryFact, StoryFactKey, StoryQuestion } from '../types';
 import { createId, shuffle } from '../utils/random';
 
 type QuestionBuilder = (get: (key: StoryFactKey) => string | undefined) => string;
@@ -19,14 +19,23 @@ const QUESTION_BUILDERS: Record<StoryFactKey, QuestionBuilder> = {
 	time: (get) => `Kapan ${get('character')} pergi?`
 };
 
-const MAX_QUESTIONS = 4;
+/** More facts get asked about as difficulty rises, on top of the ones a story actually has. */
+const MAX_QUESTIONS_BY_DIFFICULTY: Record<Difficulty, number> = {
+	easy: 2,
+	medium: 4,
+	hard: 6
+};
 
 /**
  * Builds questions strictly from the facts that actually appear in a
  * generated story. No fact, no question — the question set changes with
  * whatever the story happened to mention.
  */
-export function generateQuestions(facts: StoryFact[]): StoryQuestion[] {
+export function generateQuestions(
+	facts: StoryFact[],
+	difficulty: Difficulty = 'medium'
+): StoryQuestion[] {
+	const maxQuestions = MAX_QUESTIONS_BY_DIFFICULTY[difficulty];
 	const valueByKey = new Map(facts.map((f) => [f.key, f.value]));
 	const get = (key: StoryFactKey) => valueByKey.get(key);
 
@@ -35,7 +44,7 @@ export function generateQuestions(facts: StoryFact[]): StoryQuestion[] {
 
 	const chosenKeys: StoryFactKey[] = characterFact ? ['character'] : [];
 	for (const key of otherKeys) {
-		if (chosenKeys.length >= MAX_QUESTIONS) break;
+		if (chosenKeys.length >= maxQuestions) break;
 		chosenKeys.push(key);
 	}
 

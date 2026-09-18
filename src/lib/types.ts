@@ -1,5 +1,7 @@
 export type CardColorName = 'cream' | 'peach' | 'yellow' | 'mint' | 'sky' | 'lavender' | 'pink';
 
+export type Difficulty = 'easy' | 'medium' | 'hard';
+
 export type StoryFactKey =
 	'character' | 'companion' | 'destination' | 'transport' | 'item' | 'activity' | 'reason' | 'time';
 
