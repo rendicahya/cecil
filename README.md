@@ -12,7 +12,8 @@ pendek, pemahaman bahasa, dan kemampuan menjawab pertanyaan berdasarkan
 informasi yang didengar. Cecil bukan aplikasi ujian — pengalamannya
 dirancang terasa seperti bermain dengan kartu cerita fisik: satu kartu
 utama di tengah, kartu berikutnya mengintip di belakang, dan dapat digeser
-dengan mouse atau sentuhan.
+ke segala arah (kiri, kanan, atas, atau bawah) dengan mouse atau sentuhan
+untuk berpindah kartu.
 
 Tingkat kesulitan cerita (Mudah/Sedang/Sulit) dapat dipilih lewat kontrol
 di header: semakin tinggi tingkatnya, semakin banyak fakta yang dikemas
