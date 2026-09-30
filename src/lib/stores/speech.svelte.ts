@@ -41,7 +41,14 @@ class SpeechStore {
 
 			utterance.onstart = () => (this.speaking = true);
 			utterance.onend = () => (this.speaking = false);
-			utterance.onerror = () => (this.speaking = false);
+			utterance.onerror = (event) => {
+				this.speaking = false;
+				console.error('[speech] utterance error:', event.error, {
+					locale,
+					voice: voice?.name ?? '(none — using browser default)',
+					voiceCount: window.speechSynthesis.getVoices().length
+				});
+			};
 
 			window.speechSynthesis.speak(utterance);
 		}, 50);
