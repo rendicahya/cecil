@@ -39,8 +39,10 @@
 	let startX = 0;
 	let startY = 0;
 	let lastX = 0;
+	let lastY = 0;
 	let lastT = 0;
-	let velocity = 0;
+	let velocityX = 0;
+	let velocityY = 0;
 
 	const visibleStack = $derived(
 		deck
@@ -86,8 +88,10 @@
 		startX = event.clientX;
 		startY = event.clientY;
 		lastX = event.clientX;
+		lastY = event.clientY;
 		lastT = performance.now();
-		velocity = 0;
+		velocityX = 0;
+		velocityY = 0;
 		dragging = true;
 		transitionMs = 0;
 	}
@@ -99,8 +103,10 @@
 		const now = performance.now();
 		const dt = now - lastT;
 		if (dt > 0) {
-			velocity = (event.clientX - lastX) / dt;
+			velocityX = (event.clientX - lastX) / dt;
+			velocityY = (event.clientY - lastY) / dt;
 			lastX = event.clientX;
+			lastY = event.clientY;
 			lastT = now;
 		}
 	}
@@ -110,11 +116,21 @@
 		dragging = false;
 		pointerId = null;
 
-		const farEnough = Math.abs(dragX) > SWIPE_DISTANCE_THRESHOLD;
-		const fastEnough = Math.abs(velocity) > SWIPE_VELOCITY_THRESHOLD;
+		const absX = Math.abs(dragX);
+		const absY = Math.abs(dragY);
+		const horizontal = absX >= absY;
+		const distance = horizontal ? absX : absY;
+		const speed = horizontal ? Math.abs(velocityX) : Math.abs(velocityY);
+
+		const farEnough = distance > SWIPE_DISTANCE_THRESHOLD;
+		const fastEnough = speed > SWIPE_VELOCITY_THRESHOLD;
 
 		if (farEnough || fastEnough) {
-			commitSwipe(dragX < 0 ? 'left' : 'right');
+			if (horizontal) {
+				commitSwipe(dragX < 0 ? 'left' : 'right');
+			} else {
+				commitSwipe(dragY < 0 ? 'up' : 'down');
+			}
 		} else {
 			snapBack();
 		}
@@ -126,14 +142,33 @@
 		dragY = 0;
 	}
 
-	function commitSwipe(direction: 'left' | 'right') {
+	function commitSwipe(direction: 'left' | 'right' | 'up' | 'down') {
 		if (busy || !deck) return;
 		busy = true;
 		transitionMs = EXIT_ANIMATION_MS;
 		const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 800;
-		const distance = viewportWidth * 1.15;
-		dragX = direction === 'left' ? -distance : distance;
-		dragY += 30;
+		const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
+		const distanceX = viewportWidth * 1.15;
+		const distanceY = viewportHeight * 1.15;
+
+		switch (direction) {
+			case 'left':
+				dragX = -distanceX;
+				dragY += 30;
+				break;
+			case 'right':
+				dragX = distanceX;
+				dragY += 30;
+				break;
+			case 'up':
+				dragY = -distanceY;
+				dragX += 15;
+				break;
+			case 'down':
+				dragY = distanceY;
+				dragX += 15;
+				break;
+		}
 
 		setTimeout(() => {
 			deck?.next();
