@@ -6,6 +6,15 @@ const LOCALE_BY_LANGUAGE: Record<Language, string> = {
 	en: 'en-US'
 };
 
+function findVoice(locale: string): SpeechSynthesisVoice | undefined {
+	const voices = window.speechSynthesis.getVoices();
+	const language = locale.split('-')[0];
+	return (
+		voices.find((voice) => voice.lang === locale) ??
+		voices.find((voice) => voice.lang.split('-')[0] === language)
+	);
+}
+
 class SpeechStore {
 	speaking = $state(false);
 
@@ -16,15 +25,26 @@ class SpeechStore {
 	speak(text: string, language: Language) {
 		if (!this.supported) return;
 
+		const locale = LOCALE_BY_LANGUAGE[language];
+
+		// Chrome silently drops an utterance queued in the same tick as
+		// cancel(), so the previous speech is stopped first and the new
+		// one is queued on the next tick.
 		window.speechSynthesis.cancel();
 
-		const utterance = new SpeechSynthesisUtterance(text);
-		utterance.lang = LOCALE_BY_LANGUAGE[language];
-		utterance.onstart = () => (this.speaking = true);
-		utterance.onend = () => (this.speaking = false);
-		utterance.onerror = () => (this.speaking = false);
+		setTimeout(() => {
+			const utterance = new SpeechSynthesisUtterance(text);
+			const voice = findVoice(locale);
 
-		window.speechSynthesis.speak(utterance);
+			utterance.lang = locale;
+			if (voice) utterance.voice = voice;
+
+			utterance.onstart = () => (this.speaking = true);
+			utterance.onend = () => (this.speaking = false);
+			utterance.onerror = () => (this.speaking = false);
+
+			window.speechSynthesis.speak(utterance);
+		}, 50);
 	}
 
 	stop() {
