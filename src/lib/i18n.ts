@@ -21,7 +21,9 @@ const STRINGS = {
 		themeLightTitle: 'Mode terang',
 		themeDarkTitle: 'Mode gelap',
 		fullscreenEnter: 'Layar penuh',
-		fullscreenExit: 'Keluar dari layar penuh'
+		fullscreenExit: 'Keluar dari layar penuh',
+		speakStart: 'Bacakan cerita',
+		speakStop: 'Hentikan bacaan'
 	},
 	en: {
 		pageTitle: 'Cecil — Little Stories',
@@ -42,7 +44,9 @@ const STRINGS = {
 		themeLightTitle: 'Light mode',
 		themeDarkTitle: 'Dark mode',
 		fullscreenEnter: 'Fullscreen',
-		fullscreenExit: 'Exit fullscreen'
+		fullscreenExit: 'Exit fullscreen',
+		speakStart: 'Read story aloud',
+		speakStop: 'Stop reading'
 	}
 } satisfies Record<Language, Record<string, string>>;
 

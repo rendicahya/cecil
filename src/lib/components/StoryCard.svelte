@@ -1,12 +1,27 @@
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import type { StoryCardData } from '$lib/types';
 	import { getPaletteEntry } from '$lib/palette';
 	import { t } from '$lib/i18n';
+	import { languageStore } from '$lib/stores/language.svelte';
+	import { speechStore } from '$lib/stores/speech.svelte';
 	import BookOpenText from '@lucide/svelte/icons/book-open-text';
 	import CircleHelp from '@lucide/svelte/icons/circle-help';
+	import Volume2 from '@lucide/svelte/icons/volume-2';
+	import VolumeX from '@lucide/svelte/icons/volume-x';
 
 	let { card }: { card: StoryCardData } = $props();
 	const palette = $derived(getPaletteEntry(card.color));
+
+	function toggleSpeak() {
+		if (speechStore.speaking) {
+			speechStore.stop();
+		} else {
+			speechStore.speak(card.story.text, languageStore.current);
+		}
+	}
+
+	onDestroy(() => speechStore.stop());
 
 	// Longer stories get a smaller size so they still fit the card; short
 	// ones get to be big and inviting.
@@ -37,9 +52,24 @@
 		>
 			<BookOpenText class="h-4 w-4" strokeWidth={2.25} />
 		</span>
-		<p class="font-display text-xs font-extrabold tracking-[0.2em] uppercase opacity-70">
+		<p class="font-display flex-1 text-xs font-extrabold tracking-[0.2em] uppercase opacity-70">
 			{t('brandTagline')}
 		</p>
+		{#if speechStore.supported}
+			<button
+				type="button"
+				onclick={toggleSpeak}
+				class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--card-accent)]/45 transition hover:bg-[var(--card-accent)]/70 active:scale-95 dark:bg-[var(--card-accent-dark)]/45 dark:hover:bg-[var(--card-accent-dark)]/70"
+				aria-label={speechStore.speaking ? t('speakStop') : t('speakStart')}
+				title={speechStore.speaking ? t('speakStop') : t('speakStart')}
+			>
+				{#if speechStore.speaking}
+					<VolumeX class="h-4 w-4" strokeWidth={2.25} />
+				{:else}
+					<Volume2 class="h-4 w-4" strokeWidth={2.25} />
+				{/if}
+			</button>
+		{/if}
 	</header>
 
 	<div class="flex min-h-0 flex-1 items-center justify-center">
