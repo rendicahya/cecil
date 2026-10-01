@@ -60,6 +60,8 @@
 			<button
 				type="button"
 				onclick={toggleSpeak}
+				onpointerdown={(event) => event.stopPropagation()}
+				onpointerup={(event) => event.stopPropagation()}
 				class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--card-accent)]/45 transition hover:bg-[var(--card-accent)]/70 active:scale-95 dark:bg-[var(--card-accent-dark)]/45 dark:hover:bg-[var(--card-accent-dark)]/70"
 				aria-label={speechStore.speaking ? t('speakStop') : t('speakStart')}
 				title={speechStore.speaking ? t('speakStop') : t('speakStart')}
