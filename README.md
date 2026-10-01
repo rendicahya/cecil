@@ -25,6 +25,10 @@ Cerita dan pertanyaan pada setiap kartu digenerate secara acak dan
 langsung di browser (tanpa backend, database, atau API eksternal), dengan
 jumlah kartu yang tidak dibatasi.
 
+Setiap kartu juga punya tombol untuk membacakan ceritanya (text-to-speech)
+langsung dari browser, lengkap dengan pilihan suara jika perangkat
+menyediakan lebih dari satu voice untuk bahasa yang aktif.
+
 ## Tech stack
 
 - SvelteKit + Svelte 5 (runes) + TypeScript
@@ -33,6 +37,8 @@ jumlah kartu yang tidak dibatasi.
 - `@sveltejs/adapter-static` untuk deploy statis ke GitHub Pages
 - Cerita dan pertanyaan digenerate 100% di browser (template + word bank),
   tanpa backend/API eksternal
+- Web Speech API (`SpeechSynthesisUtterance`) untuk membacakan cerita,
+  tanpa API key atau backend
 
 ## Menjalankan secara lokal
 
