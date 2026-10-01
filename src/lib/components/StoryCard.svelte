@@ -14,6 +14,7 @@
 	const palette = $derived(getPaletteEntry(card.color));
 
 	function toggleSpeak() {
+		console.log('[speech] toggleSpeak() clicked', { speaking: speechStore.speaking });
 		if (speechStore.speaking) {
 			speechStore.stop();
 		} else {

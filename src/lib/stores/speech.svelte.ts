@@ -23,6 +23,7 @@ class SpeechStore {
 	}
 
 	speak(text: string, language: Language) {
+		console.log('[speech] speak() called', { supported: this.supported, text, language });
 		if (!this.supported) return;
 
 		const locale = LOCALE_BY_LANGUAGE[language];
@@ -31,16 +32,32 @@ class SpeechStore {
 		// cancel(), so the previous speech is stopped first and the new
 		// one is queued on the next tick.
 		window.speechSynthesis.cancel();
+		console.log('[speech] cancel() called, scheduling speak in 50ms');
 
 		setTimeout(() => {
 			const utterance = new SpeechSynthesisUtterance(text);
 			const voice = findVoice(locale);
 
+			console.log('[speech] about to call speechSynthesis.speak()', {
+				locale,
+				voice: voice?.name ?? '(none — using browser default)',
+				voiceCount: window.speechSynthesis.getVoices().length,
+				pending: window.speechSynthesis.pending,
+				speaking: window.speechSynthesis.speaking,
+				paused: window.speechSynthesis.paused
+			});
+
 			utterance.lang = locale;
 			if (voice) utterance.voice = voice;
 
-			utterance.onstart = () => (this.speaking = true);
-			utterance.onend = () => (this.speaking = false);
+			utterance.onstart = () => {
+				console.log('[speech] onstart fired');
+				this.speaking = true;
+			};
+			utterance.onend = () => {
+				console.log('[speech] onend fired');
+				this.speaking = false;
+			};
 			utterance.onerror = (event) => {
 				this.speaking = false;
 				console.error('[speech] utterance error:', event.error, {
@@ -49,8 +66,13 @@ class SpeechStore {
 					voiceCount: window.speechSynthesis.getVoices().length
 				});
 			};
+			utterance.onboundary = () => console.log('[speech] onboundary fired');
 
 			window.speechSynthesis.speak(utterance);
+			console.log('[speech] speak() call returned', {
+				pending: window.speechSynthesis.pending,
+				speaking: window.speechSynthesis.speaking
+			});
 		}, 50);
 	}
 
