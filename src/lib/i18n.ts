@@ -23,7 +23,8 @@ const STRINGS = {
 		fullscreenEnter: 'Layar penuh',
 		fullscreenExit: 'Keluar dari layar penuh',
 		speakStart: 'Bacakan cerita',
-		speakStop: 'Hentikan bacaan'
+		speakStop: 'Hentikan bacaan',
+		voiceSelectLabel: 'Pilih suara'
 	},
 	en: {
 		pageTitle: 'Cecil — Little Stories',
@@ -46,7 +47,8 @@ const STRINGS = {
 		fullscreenEnter: 'Fullscreen',
 		fullscreenExit: 'Exit fullscreen',
 		speakStart: 'Read story aloud',
-		speakStop: 'Stop reading'
+		speakStop: 'Stop reading',
+		voiceSelectLabel: 'Choose voice'
 	}
 } satisfies Record<Language, Record<string, string>>;
 

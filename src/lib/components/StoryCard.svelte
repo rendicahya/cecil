@@ -14,12 +14,21 @@
 	const palette = $derived(getPaletteEntry(card.color));
 
 	function toggleSpeak() {
-		console.log('[speech] toggleSpeak() clicked', { speaking: speechStore.speaking });
 		if (speechStore.speaking) {
 			speechStore.stop();
 		} else {
 			speechStore.speak(card.story.text, languageStore.current);
 		}
+	}
+
+	const voiceOptions = $derived(speechStore.voicesFor(languageStore.current));
+	const selectedVoiceURI = $derived(
+		speechStore.selectedVoiceURI(languageStore.current) ?? voiceOptions[0]?.voiceURI ?? ''
+	);
+
+	function onVoiceChange(event: Event) {
+		const voiceURI = (event.currentTarget as HTMLSelectElement).value;
+		speechStore.setVoice(languageStore.current, voiceURI);
 	}
 
 	onDestroy(() => speechStore.stop());
@@ -74,6 +83,20 @@
 			</button>
 		{/if}
 	</header>
+
+	{#if speechStore.supported && voiceOptions.length > 1}
+		<select
+			value={selectedVoiceURI}
+			onchange={onVoiceChange}
+			onpointerdown={(event) => event.stopPropagation()}
+			class="font-display mb-3 w-full shrink-0 rounded-full border-none bg-[var(--card-accent)]/30 px-3 py-1.5 text-xs font-semibold opacity-80 outline-none dark:bg-[var(--card-accent-dark)]/30"
+			aria-label={t('voiceSelectLabel')}
+		>
+			{#each voiceOptions as voice (voice.voiceURI)}
+				<option value={voice.voiceURI}>{voice.name}</option>
+			{/each}
+		</select>
+	{/if}
 
 	<div class="flex min-h-0 flex-1 items-center justify-center">
 		<p class="font-display {storyClass} text-center leading-snug font-semibold text-balance">
